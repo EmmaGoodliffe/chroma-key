@@ -1,0 +1,47 @@
+{
+  "name": "chroma-key",
+  "version": "1.0.0",
+  "description": "Chroma key app for PNGs",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^16.0.0",
+    "@rollup/plugin-node-resolve": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.9.1",
+    "@typescript-eslint/parser": "^4.9.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.0",
+    "eslint": "^7.15.0",
+    "prettier": "^2.2.1",
+    "rollup-plugin-css-only": "^3.0.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-terser": "^7.0.0",
+    "rollup": "^2.3.4",
+    "svelte": "^3.0.0",
+    "typescript": "^3.9.3",
+    "svelte-check": "^1.0.0",
+    "svelte-preprocess": "^4.0.0",
+    "@rollup/plugin-typescript": "^6.0.0",
+    "tslib": "^2.0.0",
+    "@tsconfig/svelte": "^1.0.0"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "lint": "eslint \".\" --fix && prettier \".\" --write",
+    "test": "echo \"No test script\"",
+    "validate": "svelte-check",
+    "start": "echo \"No start script\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmmaGoodliffe/chroma-key.git"
+  },
+  "author": "Emma Goodliffe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EmmaGoodliffe/chroma-key/issues"
+  },
+  "homepage": "https://github.com/EmmaGoodliffe/chroma-key#readme"
+}
