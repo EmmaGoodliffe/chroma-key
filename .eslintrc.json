@@ -10,7 +10,7 @@
     "plugin:import/warnings",
     "plugin:import/typescript"
   ],
-  "ignorePatterns": "*.config.js",
+  "ignorePatterns": ["*.config.js", "dist"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "sourceType": "module",

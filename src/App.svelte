@@ -1,4 +1,7 @@
 <script lang="ts">
+  import ColourPicker from "./ColourPicker.svelte";
+  import { colour1, colour2 } from "./store";
+
   let files: FileList;
   let preview: string;
 
@@ -29,8 +32,8 @@
     const result = await post("/chroma-key", {
       base64,
       convert: {
-        from: [255, 255, 255, 255],
-        to: [0, 0, 0, 0],
+        from: $colour1,
+        to: $colour2,
       },
     });
     console.log({ result });
@@ -48,8 +51,8 @@
     flex-direction: column;
     align-items: center;
     div {
-      display: flex;
       margin: 10px 0;
+      flex: 1;
       button {
         padding: 10px 20px;
         font-weight: bold;
@@ -60,9 +63,9 @@
 </style>
 
 <main>
-  <div>
-    <input type="file" bind:files />
-    <button on:click={chromaKey}>Chroma key</button>
-  </div>
+  <div><input type="file" bind:files /></div>
+  <ColourPicker onUpdate={c => colour1.set(c)} />
+  <ColourPicker onUpdate={c => colour2.set(c)} />
+  <button on:click={chromaKey}>Chroma key</button>
   <div><img src={preview} alt="Preview" /></div>
 </main>
