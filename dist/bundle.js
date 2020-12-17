@@ -337,54 +337,70 @@ var app = (function () {
 
     function create_fragment(ctx) {
     	let main;
+    	let div0;
     	let input;
     	let t0;
     	let button;
+    	let t2;
+    	let div1;
+    	let img;
+    	let img_src_value;
     	let mounted;
     	let dispose;
 
     	const block = {
     		c: function create() {
     			main = element("main");
+    			div0 = element("div");
     			input = element("input");
     			t0 = space();
     			button = element("button");
-    			button.textContent = "Convert";
+    			button.textContent = "Chroma key";
+    			t2 = space();
+    			div1 = element("div");
+    			img = element("img");
     			attr_dev(input, "type", "file");
-    			add_location(input, file, 5, 2, 69);
-    			add_location(button, file, 11, 2, 180);
-    			add_location(main, file, 4, 0, 60);
+    			attr_dev(input, "class", "svelte-1n3vt5y");
+    			add_location(input, file, 63, 4, 2123);
+    			attr_dev(button, "class", "svelte-1n3vt5y");
+    			add_location(button, file, 64, 4, 2160);
+    			attr_dev(div0, "class", "svelte-1n3vt5y");
+    			add_location(div0, file, 62, 2, 2113);
+    			if (img.src !== (img_src_value = /*preview*/ ctx[1])) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "Preview");
+    			attr_dev(img, "class", "svelte-1n3vt5y");
+    			add_location(img, file, 66, 7, 2225);
+    			attr_dev(div1, "class", "svelte-1n3vt5y");
+    			add_location(div1, file, 66, 2, 2220);
+    			attr_dev(main, "class", "svelte-1n3vt5y");
+    			add_location(main, file, 61, 0, 2104);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
-    			append_dev(main, input);
-    			append_dev(main, t0);
-    			append_dev(main, button);
+    			append_dev(main, div0);
+    			append_dev(div0, input);
+    			append_dev(div0, t0);
+    			append_dev(div0, button);
+    			append_dev(main, t2);
+    			append_dev(main, div1);
+    			append_dev(div1, img);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input, "change", /*input_change_handler*/ ctx[2]),
-    					listen_dev(input, "change", /*change_handler*/ ctx[3], false, false, false),
-    					listen_dev(
-    						button,
-    						"click",
-    						function () {
-    							if (is_function(/*convert*/ ctx[0])) /*convert*/ ctx[0].apply(this, arguments);
-    						},
-    						false,
-    						false,
-    						false
-    					)
+    					listen_dev(input, "change", /*input_change_handler*/ ctx[3]),
+    					listen_dev(button, "click", /*chromaKey*/ ctx[2], false, false, false)
     				];
 
     				mounted = true;
     			}
     		},
-    		p: function update(new_ctx, [dirty]) {
-    			ctx = new_ctx;
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*preview*/ 2 && img.src !== (img_src_value = /*preview*/ ctx[1])) {
+    				attr_dev(img, "src", img_src_value);
+    			}
     		},
     		i: noop,
     		o: noop,
@@ -409,9 +425,85 @@ var app = (function () {
     function instance($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
-    	let { convert } = $$props;
+
+    	var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+    		function adopt(value) {
+    			return value instanceof P
+    			? value
+    			: new P(function (resolve) {
+    						resolve(value);
+    					});
+    		}
+
+    		return new (P || (P = Promise))(function (resolve, reject) {
+    				function fulfilled(value) {
+    					try {
+    						step(generator.next(value));
+    					} catch(e) {
+    						reject(e);
+    					}
+    				}
+
+    				function rejected(value) {
+    					try {
+    						step(generator["throw"](value));
+    					} catch(e) {
+    						reject(e);
+    					}
+    				}
+
+    				function step(result) {
+    					result.done
+    					? resolve(result.value)
+    					: adopt(result.value).then(fulfilled, rejected);
+    				}
+
+    				step((generator = generator.apply(thisArg, _arguments || [])).next());
+    			});
+    	};
+
     	let files;
-    	const writable_props = ["convert"];
+    	let preview;
+
+    	const post = (url, data) => __awaiter(void 0, void 0, void 0, function* () {
+    		const response = yield fetch(url, {
+    			method: "POST",
+    			headers: { "Content-Type": "application/json" },
+    			body: JSON.stringify(data)
+    		});
+
+    		return response.json();
+    	});
+
+    	const bytesToBase64 = bytes => {
+    		let binary = "";
+
+    		for (let i = 0; i < bytes.byteLength; i++) {
+    			binary += String.fromCharCode(bytes[i]);
+    		}
+
+    		return window.btoa(binary);
+    	};
+
+    	const chromaKey = () => __awaiter(void 0, void 0, void 0, function* () {
+    		const [file] = files;
+    		const arrayBuffer = yield file.arrayBuffer();
+    		const bytes = new Uint8Array(arrayBuffer);
+    		const base64 = bytesToBase64(bytes);
+
+    		const result = yield post("/chroma-key", {
+    			base64,
+    			convert: {
+    				from: [255, 255, 255, 255],
+    				to: [0, 0, 0, 0]
+    			}
+    		});
+
+    		console.log({ result });
+    		$$invalidate(1, preview = result.base64);
+    	});
+
+    	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<App> was created with unknown prop '${key}'`);
@@ -419,35 +511,35 @@ var app = (function () {
 
     	function input_change_handler() {
     		files = this.files;
-    		$$invalidate(1, files);
+    		$$invalidate(0, files);
     	}
 
-    	const change_handler = () => {
-    		console.log({ files });
-    	};
-
-    	$$self.$$set = $$props => {
-    		if ("convert" in $$props) $$invalidate(0, convert = $$props.convert);
-    	};
-
-    	$$self.$capture_state = () => ({ convert, files });
+    	$$self.$capture_state = () => ({
+    		__awaiter,
+    		files,
+    		preview,
+    		post,
+    		bytesToBase64,
+    		chromaKey
+    	});
 
     	$$self.$inject_state = $$props => {
-    		if ("convert" in $$props) $$invalidate(0, convert = $$props.convert);
-    		if ("files" in $$props) $$invalidate(1, files = $$props.files);
+    		if ("__awaiter" in $$props) __awaiter = $$props.__awaiter;
+    		if ("files" in $$props) $$invalidate(0, files = $$props.files);
+    		if ("preview" in $$props) $$invalidate(1, preview = $$props.preview);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [convert, files, input_change_handler, change_handler];
+    	return [files, preview, chromaKey, input_change_handler];
     }
 
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance, create_fragment, safe_not_equal, { convert: 0 });
+    		init(this, options, instance, create_fragment, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -455,29 +547,12 @@ var app = (function () {
     			options,
     			id: create_fragment.name
     		});
-
-    		const { ctx } = this.$$;
-    		const props = options.props || {};
-
-    		if (/*convert*/ ctx[0] === undefined && !("convert" in props)) {
-    			console_1.warn("<App> was created without expected prop 'convert'");
-    		}
-    	}
-
-    	get convert() {
-    		throw new Error("<App>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set convert(value) {
-    		throw new Error("<App>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
     const app = new App({
         target: document.body,
-        props: {
-            convert: console.log,
-        },
+        props: {},
     });
 
     return app;
