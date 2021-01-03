@@ -1,6 +1,14 @@
 import express from "express";
+import * as functions from "firebase-functions";
 import Jimp from "jimp";
-import { resolve } from "path";
+
+// // Start writing Firebase Functions
+// // https://firebase.google.com/docs/functions/typescript
+//
+// export const helloWorld = functions.https.onRequest((request, response) => {
+//   functions.logger.info("Hello logs!", {structuredData: true});
+//   response.send("Hello from Firebase!");
+// });
 
 type RGBA = [number, number, number, number];
 
@@ -32,10 +40,6 @@ const app = express();
 app.use(express.json());
 app.use(express.static("dist"));
 
-app.get("/", (req, res) => {
-  res.sendFile(resolve("index.html"));
-});
-
 app.post("/chroma-key", async (req, res) => {
   try {
     const base64 = req.body.base64 as string;
@@ -60,5 +64,6 @@ app.post("/chroma-key", async (req, res) => {
   }
 });
 
-const port = 1234;
-app.listen(port, () => console.log(`Listening at http://localhost:${port}`));
+const server = functions.https.onRequest(app);
+
+export { app, server };

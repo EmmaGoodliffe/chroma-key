@@ -19,7 +19,6 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.0",
     "node-sass": "^5.0.0",
-    "nodemon": "^2.0.6",
     "prettier": "^2.2.1",
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^3.0.0",
@@ -34,12 +33,13 @@
     "typescript": "^3.9.3"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && cd functions && npm run build",
+    "deploy": "firebase deploy",
     "dev": "rollup -c -w",
     "lint": "eslint \".\" --fix && prettier \".\" --write",
+    "start": "firebase serve --only functions,hosting",
     "test": "echo \"No test script\"",
-    "validate": "svelte-check",
-    "start": "nodemon server.ts"
+    "validate": "svelte-check"
   },
   "repository": {
     "type": "git",
